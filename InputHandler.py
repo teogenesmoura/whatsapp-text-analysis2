@@ -2,7 +2,7 @@
   wppAnalysis.py run <textfile> [--freqAnalysis=<freqAnalysis>] [--stopwords=<stopWords>] [--Iramuteq=<Iramuteq>]
 """
 from docopt import docopt
-from .util import load_stop_words
+from util import load_stop_words
 import abc,re
 
 class AbstractClass(metaclass=abc.ABCMeta):
@@ -51,9 +51,9 @@ class WhatsappConversationAnalysis(AbstractClass):
 		return result
 
 	def _remove_stop_words(self, conversation):
-		stop_words = util.load_stop_words()
+		stop_words = load_stop_words()
 		result = ""
-		for words in conversation:
+		for word in conversation.split():
 			if word not in stop_words:
 				result += word + " "
 		return result
