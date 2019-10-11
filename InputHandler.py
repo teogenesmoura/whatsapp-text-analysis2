@@ -58,9 +58,6 @@ class WhatsappConversationAnalysis(AbstractClass):
 				result += word + " "
 		return result
 
-	def _remove_stop_words(self, conversation):
-		pass
-
 	def _apply_Iramuteq(self, conversation):
 		pass 
 
