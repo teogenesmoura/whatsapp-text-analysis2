@@ -1,3 +1,8 @@
+"""Usage:
+  wppAnalysis.py run <textfile> [--freqAnalysis=<freqAnalysis>] [--stopwords=<stopWords>] [--Iramuteq=<Iramuteq>]
+"""
+from docopt import docopt
+from .util import load_stop_words
 import abc,re
 
 class AbstractClass(metaclass=abc.ABCMeta):
@@ -42,16 +47,16 @@ class WhatsappConversationAnalysis(AbstractClass):
 		for line in lines:
 			line = line.strip()
 			if line:
-				result += re.sub(regex_info_message, "", line) + "\n"
-				print(result)
-		return result 
+				result += re.sub(regex_info_message, "", line.lower()) + "\n"
+		return result
 
 	def _remove_stop_words(self, conversation):
-		stopwords_set = set()
-		with open('stopwords.txt', 'r') as stopwords:
-			for word in stopwords:
-			stopwords_set.add(word)
-		return stopwords_set
+		stop_words = util.load_stop_words()
+		result = ""
+		for words in conversation:
+			if word not in stop_words:
+				result += word + " "
+		return result
 
 	def _apply_Iramuteq(self, conversation):
 		pass 
@@ -63,5 +68,9 @@ def Init(arguments):
 	Wpp = WhatsappConversationAnalysis()
 	Wpp.execution_steps(arguments['<textfile>'])
 
-if __name__ == "__main__":
-	main()
+if __name__ == '__main__':
+    arguments = docopt(__doc__, version='0.1.1rc')
+    if arguments['<textfile>']:
+    	Init(arguments)
+    else: 
+    	print("You should input a textfile")
