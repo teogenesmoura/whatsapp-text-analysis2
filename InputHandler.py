@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """Usage:
   wppAnalysis.py run <textfile> [--freqAnalysis=<freqAnalysis>] [--stopwords=<stopWords>] [--Iramuteq=<Iramuteq>]
 """
@@ -6,6 +7,11 @@ from util import load_stop_words
 import abc,re
 
 class AbstractClass(metaclass=abc.ABCMeta):
+=======
+import abc, re
+
+class AbstractClass():
+>>>>>>> 7083baabfd8af37f62c0e787900d8239b106a446
 
 	def execution_steps(self, conversationPath):
 		self.conversation_body_of_text = self._load_input(conversationPath)
@@ -47,6 +53,7 @@ class WhatsappConversationAnalysis(AbstractClass):
 		for line in lines:
 			line = line.strip()
 			if line:
+<<<<<<< HEAD
 				result += re.sub(regex_info_message, "", line.lower()) + "\n"
 		return result
 
@@ -57,6 +64,14 @@ class WhatsappConversationAnalysis(AbstractClass):
 			if word not in stop_words:
 				result += word + " "
 		return result
+=======
+				result += re.sub(regex_info_message, "", line) + "\n"
+				print(result)
+		return result 
+
+	def _remove_stop_words(self, conversation):
+		pass
+>>>>>>> 7083baabfd8af37f62c0e787900d8239b106a446
 
 	def _apply_Iramuteq(self, conversation):
 		pass 
@@ -68,9 +83,14 @@ def Init(arguments):
 	Wpp = WhatsappConversationAnalysis()
 	Wpp.execution_steps(arguments['<textfile>'])
 
+<<<<<<< HEAD
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='0.1.1rc')
     if arguments['<textfile>']:
     	Init(arguments)
     else: 
     	print("You should input a textfile")
+=======
+if __name__ == "__main__":
+	main()
+>>>>>>> 7083baabfd8af37f62c0e787900d8239b106a446

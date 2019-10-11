@@ -1,2 +1,7 @@
 .DS_Store
+<<<<<<< HEAD
 __pycache__/
+=======
+__pycache__/
+clean_file.txt
+>>>>>>> 7083baabfd8af37f62c0e787900d8239b106a446
