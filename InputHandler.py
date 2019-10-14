@@ -3,7 +3,7 @@
 """
 from docopt import docopt
 from util import load_stop_words, load_Iramuteq
-import abc,re,sys
+import abc,re,sys, csv
 
 class AbstractClass(metaclass=abc.ABCMeta):
 
@@ -82,6 +82,13 @@ class WhatsappConversationAnalysis(AbstractClass):
 			else:
 				freq_map[word] = 1
 		return freq_map
+
+	def _save_freq_to_csv(self, freqDict):
+		with open('freq.csv', 'w') as csv_file:
+			writer = csv.writer(csv_file)
+			for key, value in freqDict.items():
+				writer.writerow([key, value])
+
 
 def Init(arguments):
 	Wpp = WhatsappConversationAnalysis()
