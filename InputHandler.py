@@ -72,7 +72,16 @@ class WhatsappConversationAnalysis(AbstractClass):
 		return new_body_text	
 
 	def _freq_analysis(self, conversation):
-		pass
+		if not conversation:
+			return "please input a body of text in order to run the frequency analysis"
+			sys.exit(0)
+		freq_map = dict()
+		for word in conversation.split():
+			if word in freq_map:
+				freq_map[word] += 1
+			else:
+				freq_map[word] = 1
+		return freq_map
 
 def Init(arguments):
 	Wpp = WhatsappConversationAnalysis()
