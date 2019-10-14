@@ -12,8 +12,9 @@ class AbstractClass(metaclass=abc.ABCMeta):
 		self.conversation_body_of_text = self._clean_data(self.conversation_body_of_text)
 		self.conversation_body_of_text = self._remove_stop_words(self.conversation_body_of_text)
 		self.conversation_body_of_text = self._apply_Iramuteq(self.conversation_body_of_text)
-		self.conversation_body_of_text = self._freq_analysis(self.conversation_body_of_text)
-		return self.conversation_body_of_text
+		self.freq_analysis = self._freq_analysis(self.conversation_body_of_text)
+		self._save_freq_to_csv(self.freq_analysis)
+		return self.freq_analysis
 
 	@abc.abstractmethod
 	def _load_input(conversationPath):
@@ -84,9 +85,10 @@ class WhatsappConversationAnalysis(AbstractClass):
 		return freq_map
 
 	def _save_freq_to_csv(self, freqDict):
+		sorted_freqDict = sorted(freqDict.items(), key=lambda kv: -kv[1])
 		with open('freq.csv', 'w') as csv_file:
 			writer = csv.writer(csv_file)
-			for key, value in freqDict.items():
+			for key, value in sorted_freqDict:
 				writer.writerow([key, value])
 
 
