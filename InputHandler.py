@@ -2,8 +2,8 @@
   wppAnalysis.py run <textfile> [--freqAnalysis=<freqAnalysis>] [--stopwords=<stopWords>] [--Iramuteq=<Iramuteq>]
 """
 from docopt import docopt
-from util import load_stop_words
-import abc,re
+from util import load_stop_words, load_Iramuteq
+import abc,re,sys
 
 class AbstractClass(metaclass=abc.ABCMeta):
 
@@ -59,7 +59,17 @@ class WhatsappConversationAnalysis(AbstractClass):
 		return result
 
 	def _apply_Iramuteq(self, conversation):
-		pass 
+		if not conversation: 
+			return "please input a body of text in order to apply the Iramuteq filter"
+			sys.exit(0)
+		iramuteq_map = load_Iramuteq("word-equivalent")
+		new_body_text = ""
+		for word in conversation.split():
+			if word in iramuteq_map:
+				previous_value_of_word = word 
+				word = iramuteq_map[word]
+			new_body_text += word + " "
+		return new_body_text	
 
 	def _freq_analysis(self, conversation):
 		pass
