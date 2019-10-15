@@ -3,7 +3,8 @@
 """
 from docopt import docopt
 from util import load_stop_words, load_Iramuteq
-import abc,re,sys, csv
+import abc,re,sys,csv
+from nltk.util import ngrams
 
 class AbstractClass(metaclass=abc.ABCMeta):
 
@@ -14,6 +15,7 @@ class AbstractClass(metaclass=abc.ABCMeta):
 		self.conversation_body_of_text = self._apply_Iramuteq(self.conversation_body_of_text)
 		self.freq_analysis = self._freq_analysis(self.conversation_body_of_text)
 		self._save_freq_to_csv(self.freq_analysis)
+		print (self._generate_ngrams(self.conversation_body_of_text, 2))
 		return self.freq_analysis
 
 	@abc.abstractmethod
@@ -36,6 +38,10 @@ class AbstractClass(metaclass=abc.ABCMeta):
 	def _freq_analysis(conversationBodyOfText):
 		pass 
 
+	@abc.abstractmethod
+	def _generate_ngrams(conversationBodyOfText, n):
+		pass 
+
 class WhatsappConversationAnalysis(AbstractClass):
 
 	def _load_input(self, conversationPath):
@@ -54,6 +60,7 @@ class WhatsappConversationAnalysis(AbstractClass):
 	def _remove_stop_words(self, conversation):
 		stop_words = load_stop_words()
 		result = ""
+		filtered_conversation = re.sub(r'[^a-zA-Z0-9\s]', ' ', conversation).lower()
 		for word in conversation.split():
 			if word not in stop_words:
 				result += word + " "
@@ -90,6 +97,20 @@ class WhatsappConversationAnalysis(AbstractClass):
 			writer = csv.writer(csv_file)
 			for key, value in sorted_freqDict:
 				writer.writerow([key, value])
+
+	def _generate_ngrams(self, s, n):
+		# Convert to lowercases
+		s = s.lower()
+		# Replace all none alphanumeric characters with spaces
+		s = re.sub(r'[^a-zA-Z0-9\s]', ' ', s)
+		# Break sentence in the token, remove empty tokens
+		tokens = [token for token in s.split(" ") if token != ""]
+		actors = ['bolsonaro', '2022', 'petista']
+		n_grams = list(ngrams(tokens, 2))
+		for n_gram in n_grams:
+			if "lula" in n_gram:
+				print(n_gram)
+		return result
 
 
 def Init(arguments):
