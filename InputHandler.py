@@ -14,6 +14,7 @@ class AbstractClass(metaclass=abc.ABCMeta):
 		self.conversation_body_of_text = self._apply_Iramuteq(self.conversation_body_of_text)
 		self.freq_analysis = self._freq_analysis(self.conversation_body_of_text)
 		self._save_freq_to_csv(self.freq_analysis)
+		print(self._count_words(self.conversation_body_of_text))
 		return self.freq_analysis
 
 	@abc.abstractmethod
@@ -35,6 +36,10 @@ class AbstractClass(metaclass=abc.ABCMeta):
 	@abc.abstractmethod
 	def _freq_analysis(conversationBodyOfText):
 		pass 
+
+	@abc.abstractmethod
+	def _count_words(conversationBodyOfText):
+		pass
 
 class WhatsappConversationAnalysis(AbstractClass):
 
@@ -91,6 +96,11 @@ class WhatsappConversationAnalysis(AbstractClass):
 			for key, value in sorted_freqDict:
 				writer.writerow([key, value])
 
+	def _count_words(self, conversation):
+		counter = 0
+		for words in conversation.split():
+			counter += 1
+		return counter
 
 def Init(arguments):
 	Wpp = WhatsappConversationAnalysis()
