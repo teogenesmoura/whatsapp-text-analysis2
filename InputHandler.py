@@ -105,13 +105,8 @@ class WhatsappConversationAnalysis(AbstractClass):
 		s = re.sub(r'[^a-zA-Z0-9\s]', ' ', s)
 		# Break sentence in the token, remove empty tokens
 		tokens = [token for token in s.split(" ") if token != ""]
-		actors = ['bolsonaro', '2022', 'petista']
-		n_grams = list(ngrams(tokens, 2))
-		for n_gram in n_grams:
-			if "lula" in n_gram:
-				print(n_gram)
-		return result
-
+		n_grams = list(ngrams(tokens, n))
+		return n_grams
 
 def Init(arguments):
 	Wpp = WhatsappConversationAnalysis()
