@@ -70,8 +70,6 @@ class WhatsappConversationAnalysis(AbstractClass):
     def _remove_stop_words(self, conversation):
         stop_words = load_stop_words()
         result = ""
-        filtered_conversation = re.sub(
-            r'[^a-zA-Z0-9\s]', ' ', conversation).lower()
         for word in conversation.split():
             if word not in stop_words:
                 result += word + " "
@@ -129,10 +127,10 @@ def Init(arguments):
     Wpp = WhatsappConversationAnalysis()
     Wpp.execution_steps(arguments['<textfile>'])
 
-
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='0.1.1rc')
     if arguments['<textfile>']:
         Init(arguments)
     else:
         print("You should input a textfile")
+
