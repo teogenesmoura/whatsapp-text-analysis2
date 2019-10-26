@@ -17,12 +17,13 @@ class AbstractClass(metaclass=abc.ABCMeta):
             self.conversation_body_of_text)
         self.conversation_body_of_text = self._remove_stop_words(
             self.conversation_body_of_text)
-        self.conversation_body_of_text = self._apply_Iramuteq(
-            self.conversation_body_of_text)
-        self.freq_analysis = self._freq_analysis(self.conversation_body_of_text)
-        self._save_freq_to_csv(self.freq_analysis)
-        self._generate_ngrams(self.conversation_body_of_text, 3)
-        print(self._count_words(self.conversation_body_of_text))
+        print(self.conversation_body_of_text)
+        # self.conversation_body_of_text = self._apply_Iramuteq(
+        #     self.conversation_body_of_text)
+        # self.freq_analysis = self._freq_analysis(self.conversation_body_of_text)
+        # self._save_freq_to_csv(self.freq_analysis)
+        # self._generate_ngrams(self.conversation_body_of_text, 3)
+        # print(self._count_words(self.conversation_body_of_text))
 
     @abc.abstractmethod
     def _load_input(conversationPath):
@@ -58,6 +59,7 @@ class WhatsappConversationAnalysis(AbstractClass):
       return open(conversationPath, "r", encoding="utf-8").read().splitlines()
       
     def _clean_data(self, conversation):
+      conversation = lowercase(conversation)
       conversation = remove_wpp_telephone_number_and_time(conversation)
       conversation = remove_words_shorter_than_2(conversation) 
       conversation = remove_emojis(conversation)
@@ -65,7 +67,15 @@ class WhatsappConversationAnalysis(AbstractClass):
 
     def _remove_stop_words(self, conversation):
       stop_words = load_stop_words()
-      return [word for word in conversation if word not in stop_words]
+      new_line = ""
+      new_conversation = []
+      for line in conversation:
+        for word in line.split():
+            if word not in stop_words:
+                new_line += word + " "
+        new_conversation.append(new_line)
+        new_line = ""
+      return new_conversation
 
     def _apply_Iramuteq(self, conversation):
         if not conversation:
@@ -94,7 +104,7 @@ class WhatsappConversationAnalysis(AbstractClass):
 
     def _save_freq_to_csv(self, freqDict):
         sorted_freqDict = sorted(freqDict.items(), key=lambda kv: -kv[1])
-        with open('freq.csv', 'w') as csv_file:
+        with open('freq.csv', 'w', encoding="utf-8") as csv_file:
             writer = csv.writer(csv_file)
             for key, value in sorted_freqDict:
                 writer.writerow([key, value])
@@ -105,7 +115,7 @@ class WhatsappConversationAnalysis(AbstractClass):
         # Break sentence in the token, remove empty tokens
         tokens = [token for token in s.split(" ") if token != ""]
         n_grams = list(ngrams(tokens, 3))
-        with open("ngrams_tweets.txt", "w") as f:
+        with open("ngrams.txt", "w") as f:
             f.write('\n'.join('%s %s %s' % x for x in n_grams))
         return n_grams
 

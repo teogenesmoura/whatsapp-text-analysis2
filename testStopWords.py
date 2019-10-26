@@ -16,6 +16,8 @@ class TestStopWords(unittest.TestCase):
 	def test_remove_stop_words(self):
 		stopwords = load_stop_words()
 		w = WhatsappConversationAnalysis()
+		word = ["que", "para", "por", "na"]
+		self.assertTrue(len(w._remove_stop_words(word)) == 0)
 		self.assertTrue(len(w._remove_stop_words(stopwords)) == 0)
 
 if __name__ == '__main__':

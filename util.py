@@ -1,5 +1,8 @@
 import re, emoji 
 
+def lowercase(conversation):
+	return [line.lower() for line in conversation]
+
 def remove_emojis(lines):
 	for line in lines:
 		line = extract_emojis(line)
