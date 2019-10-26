@@ -6,7 +6,7 @@ ir
 bom
 dia
 pro
-apagada.
+apagada
 que
 e
 do

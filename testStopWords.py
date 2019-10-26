@@ -13,5 +13,10 @@ class TestStopWords(unittest.TestCase):
 		self.assertTrue(len(stopwords) > 0)
 		self.assertTrue(random_words.issubset(stopwords)) #checks if at least some of the expected words are loaded
 
+	def test_remove_stop_words(self):
+		stopwords = load_stop_words()
+		w = WhatsappConversationAnalysis()
+		self.assertTrue(len(w._remove_stop_words(stopwords)) == 0)
+
 if __name__ == '__main__':
     unittest.main()
