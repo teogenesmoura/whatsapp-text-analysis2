@@ -2,3 +2,4 @@
 __pycache__/
 freq.csv
 text.txt
+ngrams.txt

@@ -2,7 +2,7 @@
   wppAnalysis.py run <textfile> [--freqAnalysis=<freqAnalysis>] [--stopwords=<stopWords>] [--Iramuteq=<Iramuteq>]
 """
 from docopt import docopt
-from util import load_stop_words, load_Iramuteq
+from util import *
 import abc
 import re
 import sys
@@ -21,8 +21,8 @@ class AbstractClass(metaclass=abc.ABCMeta):
             self.conversation_body_of_text)
         self.freq_analysis = self._freq_analysis(self.conversation_body_of_text)
         self._save_freq_to_csv(self.freq_analysis)
-        print(self._generate_ngrams(self.conversation_body_of_text, 2))
-        return self.freq_analysis
+        self._generate_ngrams(self.conversation_body_of_text, 3)
+        print(self._count_words(self.conversation_body_of_text))
 
     @abc.abstractmethod
     def _load_input(conversationPath):
@@ -48,32 +48,34 @@ class AbstractClass(metaclass=abc.ABCMeta):
     def _generate_ngrams(conversationBodyOfText, n):
         pass
 
-	@abc.abstractmethod
-	def _count_words(conversationBodyOfText):
-		pass
+    @abc.abstractmethod
+    def _count_words(conversationBodyOfText):
+        pass
 
 class WhatsappConversationAnalysis(AbstractClass):
 
-    def _load_input(self, conversationPath):
-        return open(conversationPath, 'r').read()
-
+    def _load_input(self, conversationPath):      
+      return open(conversationPath, "r", encoding="utf-8").read().splitlines()
+      
     def _clean_data(self, conversation):
-        regex_info_message = r"\[.*?\].{3,4}\d{2}.\d{2}.\d{4,5}.\d{4}.:*"
-        lines = conversation.splitlines()
-        result = ""
-        for line in lines:
-            line = line.strip()
-            if line:
-                result += re.sub(regex_info_message, "", line.lower()) + "\n"
-        return result
+      conversation = lowercase(conversation)
+      conversation = remove_punctuation(conversation)
+      conversation = remove_wpp_telephone_number_and_time(conversation)
+      conversation = remove_words_shorter_than_2(conversation) 
+      conversation = remove_emojis(conversation)
+      return conversation
 
     def _remove_stop_words(self, conversation):
-        stop_words = load_stop_words()
-        result = ""
-        for word in conversation.split():
+      stop_words = load_stop_words()
+      new_line = ""
+      new_conversation = []
+      for line in conversation:
+        for word in line.split():
             if word not in stop_words:
-                result += word + " "
-        return result
+                new_line += word + " "
+        new_conversation.append(new_line)
+        new_line = ""
+      return new_conversation
 
     def _apply_Iramuteq(self, conversation):
         if not conversation:
@@ -81,7 +83,7 @@ class WhatsappConversationAnalysis(AbstractClass):
             sys.exit(0)
         iramuteq_map = load_Iramuteq("word-equivalent")
         new_body_text = ""
-        for word in conversation.split():
+        for word in conversation:
             if word in iramuteq_map:
                 previous_value_of_word = word
                 word = iramuteq_map[word]
@@ -102,7 +104,7 @@ class WhatsappConversationAnalysis(AbstractClass):
 
     def _save_freq_to_csv(self, freqDict):
         sorted_freqDict = sorted(freqDict.items(), key=lambda kv: -kv[1])
-        with open('freq.csv', 'w') as csv_file:
+        with open('freq.csv', 'w', encoding="utf-8") as csv_file:
             writer = csv.writer(csv_file)
             for key, value in sorted_freqDict:
                 writer.writerow([key, value])
@@ -110,18 +112,19 @@ class WhatsappConversationAnalysis(AbstractClass):
     def _generate_ngrams(self, s, n):
         # Convert to lowercases
         s = s.lower()
-        # Replace all none alphanumeric characters with spaces
-        s = re.sub(r'[^a-zA-Z0-9\s]', ' ', s)
         # Break sentence in the token, remove empty tokens
         tokens = [token for token in s.split(" ") if token != ""]
-        n_grams = list(ngrams(tokens, 2))
+        n_grams = list(ngrams(tokens, 3))
+        with open("ngrams.txt", "w") as f:
+            f.write('\n'.join('%s %s %s' % x for x in n_grams))
         return n_grams
 
-	def _count_words(self, conversation):
-		counter = 0
-		for words in conversation.split():
-			counter += 1
-		return counter
+    def _count_words(self, conversation):
+      counter = 0
+      for word in conversation.split():
+        print(word)
+        counter += 1
+      return counter
 
 def Init(arguments):
     Wpp = WhatsappConversationAnalysis()
