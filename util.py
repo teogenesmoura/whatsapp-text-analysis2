@@ -1,7 +1,10 @@
-import re, emoji 
+import re, emoji, string 
 
 def lowercase(conversation):
 	return [line.lower() for line in conversation]
+
+def remove_punctuation(conversation):
+	return [line.translate(str.maketrans('', '', string.punctuation)) for line in conversation]
 
 def remove_emojis(lines):
 	for line in lines:

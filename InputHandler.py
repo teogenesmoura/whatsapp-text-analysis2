@@ -17,13 +17,12 @@ class AbstractClass(metaclass=abc.ABCMeta):
             self.conversation_body_of_text)
         self.conversation_body_of_text = self._remove_stop_words(
             self.conversation_body_of_text)
-        print(self.conversation_body_of_text)
-        # self.conversation_body_of_text = self._apply_Iramuteq(
-        #     self.conversation_body_of_text)
-        # self.freq_analysis = self._freq_analysis(self.conversation_body_of_text)
-        # self._save_freq_to_csv(self.freq_analysis)
-        # self._generate_ngrams(self.conversation_body_of_text, 3)
-        # print(self._count_words(self.conversation_body_of_text))
+        self.conversation_body_of_text = self._apply_Iramuteq(
+            self.conversation_body_of_text)
+        self.freq_analysis = self._freq_analysis(self.conversation_body_of_text)
+        self._save_freq_to_csv(self.freq_analysis)
+        self._generate_ngrams(self.conversation_body_of_text, 3)
+        print(self._count_words(self.conversation_body_of_text))
 
     @abc.abstractmethod
     def _load_input(conversationPath):
@@ -60,6 +59,7 @@ class WhatsappConversationAnalysis(AbstractClass):
       
     def _clean_data(self, conversation):
       conversation = lowercase(conversation)
+      conversation = remove_punctuation(conversation)
       conversation = remove_wpp_telephone_number_and_time(conversation)
       conversation = remove_words_shorter_than_2(conversation) 
       conversation = remove_emojis(conversation)
