@@ -55,7 +55,7 @@ class AbstractClass(metaclass=abc.ABCMeta):
 class WhatsappConversationAnalysis(AbstractClass):
 
     def _load_input(self, conversationPath):      
-      return open(conversationPath, 'r').read().splitlines()
+      return open(conversationPath, "r", encoding="utf-8").read().splitlines()
       
     def _clean_data(self, conversation):
       conversation = remove_wpp_telephone_number_and_time(conversation)
