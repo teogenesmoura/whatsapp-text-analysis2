@@ -1,9 +1,24 @@
+import re, emoji 
+
+def remove_emojis(lines):
+	for line in lines:
+		line = extract_emojis(line)
+	return lines
+
+def extract_emojis(str):
+	return ''.join(c for c in str if c not in emoji.UNICODE_EMOJI)
+
+def remove_wpp_telephone_number_and_time(lines):
+	return [re.sub(r"\[.*?\].{3,4}\d{2}.\d{2}.\d{4,5}.\d{4}.:*", "", line) for line in lines]	
+
+def remove_words_shorter_than_2(lines):
+	return [re.sub(r"\b\w{1,2}\b", "", line) for line in lines]
+
 def load_stop_words(): 
-	stopwords_set = set()
-	with open('stopwords.txt', 'r') as stopwords:
-		for word in stopwords:
-			stopwords_set.add(word.rstrip("\n"))
-	return stopwords_set
+	file = open('stopwords.txt', 'r')
+	stopwords = set(line.strip() for line in file)
+	file.close()
+	return stopwords
 
 def load_Iramuteq(columnsOption):
 	iramuteq_file = open("iramuteq_lexicon.txt", "r")

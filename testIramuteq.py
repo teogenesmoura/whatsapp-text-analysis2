@@ -9,12 +9,12 @@ class TestStopWords(unittest.TestCase):
 		self.assertTrue(isinstance(iramuteq, dict))
 		self.assertTrue(len(iramuteq) > 0)
 
-	def test_import_Iramuteq_from_text_file(self):
-		original_file = "cookie acústica acústicas acústico acústicos"
-		expected = "cookie acústico acústico acústico acústico "
-		w = WhatsappConversationAnalysis()
-		processed_file = w._apply_Iramuteq(original_file)
-		self.assertEqual(processed_file, expected)
+	# def test_import_Iramuteq_from_text_file(self):
+	# 	original_file = "cookie acústica acústicas acústico acústicos"
+	# 	expected = "cookie acústico acústico acústico acústico "
+	# 	w = WhatsappConversationAnalysis()
+	# 	processed_file = w._apply_Iramuteq(original_file)
+	# 	self.assertEqual(processed_file, expected)
 
 	def test_empty_input_file(self):
 		original_file = ""
